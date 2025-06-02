@@ -23,13 +23,12 @@ const editedRecipe = ref<Recipe>({
   notes: '',
 })
 
-// Load the recipe data when component mounts
 onMounted(() => {
   const recipeId = route.params.id
   const recipeToEdit = recipes.find(recipe => recipe.id === recipeId)
   
   if (recipeToEdit) {
-    editedRecipe.value = JSON.parse(JSON.stringify(recipeToEdit)) // Deep copy
+    editedRecipe.value = JSON.parse(JSON.stringify(recipeToEdit))
   }
 })
 
@@ -37,8 +36,7 @@ function updateRecipe() {
   const index = recipes.findIndex(recipe => recipe.id === editedRecipe.value.id)
   if (index !== -1) {
     recipes[index] = { ...editedRecipe.value }
-    alert('Recipe updated successfully!')
-    router.push({ name: 'recipe details', params: { id: editedRecipe.value.id } })
+    router.push('/recipes')
   }
 }
 
@@ -47,10 +45,7 @@ function goBack() {
 }
 
 function addIngredient() {
-  editedRecipe.value.ingredients.push({
-    name: '',
-    unit: ''
-  })
+  editedRecipe.value.ingredients.push({ name: '', unit: '' })
 }
 
 function removeIngredient(index: number) {
@@ -58,9 +53,7 @@ function removeIngredient(index: number) {
 }
 
 function addStep() {
-  editedRecipe.value.steps.push({
-    description: '',
-  })
+  editedRecipe.value.steps.push({ description: '' })
 }
 
 function removeStep(index: number) {

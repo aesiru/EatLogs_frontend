@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/stores/recipe'
 
+const router = useRouter()
 const newRecipe = ref<Recipe>({
   id: Date.now().toString(),
   recipe_name: '',
@@ -12,7 +14,7 @@ const newRecipe = ref<Recipe>({
   serving: 0,
   description: '',
   procedure: '',
-  image: '', // You can add image upload logic later
+  image: '',
   favorite: false,
   ingredients: [],
   steps: [],
@@ -21,33 +23,15 @@ const newRecipe = ref<Recipe>({
 
 function saveRecipe() {
   recipes.push({ ...newRecipe.value, id: Date.now().toString() })
-  alert('Recipe added!')
-  newRecipe.value = {
-    id: Date.now().toString(),
-    recipe_name: '',
-    cuisine: '',
-    category: '',
-    duration: 0,
-    serving: 0,
-    description: '',
-    procedure: '',
-    image: '',
-    favorite: false,
-    ingredients: [],
-    steps: [],
-    notes: '',
-  }
+  router.push('/recipes')
 }
 
 function goBack() {
-  // Add your navigation logic here
-  window.history.back() // or use your router
+  router.go(-1)
 }
 
 function addIngredient() {
-  newRecipe.value.ingredients.push({
-    name: '',
-  })
+  newRecipe.value.ingredients.push({ name: '', unit: '' })
 }
 
 function removeIngredient(index: number) {
@@ -55,9 +39,7 @@ function removeIngredient(index: number) {
 }
 
 function addStep() {
-  newRecipe.value.steps.push({
-    description: '',
-  })
+  newRecipe.value.steps.push({ description: '' })
 }
 
 function removeStep(index: number) {
