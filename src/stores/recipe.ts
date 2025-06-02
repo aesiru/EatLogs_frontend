@@ -1,20 +1,45 @@
+
 import adoboImg from '@/assets/pictures/adobo.png'
 import carbonaraImg from '@/assets/pictures/carbonara.png'
 import bicolExpressImg from '@/assets/pictures/bicol-express.png'
 
-export interface Recipe{
-    id: string
-    recipe_name: string
-    cuisine: string
-    category: string
-    duration: number
-    serving: number
-    description: string
-    procedure: string
-    image: string
-    favorite: boolean
-
+export interface Ingredient {
+  name: string
+  unit: string
 }
+
+export interface Step {
+  description: string
+}
+
+export interface Recipe {
+  id: string
+  recipe_name: string
+  cuisine: string
+  category: string
+  duration: number
+  serving: number
+  description: string
+  procedure: string
+  image: string
+  favorite: boolean
+  ingredients: Ingredient[]
+  steps: Step[]
+  notes?: string
+}
+// export interface Recipe{
+//     id: string
+//     recipe_name: string
+//     cuisine: string
+//     category: string
+//     duration: number
+//     serving: number
+//     description: string
+//     procedure: string
+//     image: string
+//     favorite: boolean
+
+// }
 
 export const recipes: Recipe[] = [
     {
@@ -28,6 +53,8 @@ export const recipes: Recipe[] = [
         procedure: "Step step step",
         image: adoboImg,
         favorite: false,
+        ingredients: [],
+        steps: [],
     },
     {
         id: "000002",
@@ -40,6 +67,8 @@ export const recipes: Recipe[] = [
         procedure: "Step step step",
         image: carbonaraImg,
         favorite: true,
+        ingredients: [],
+        steps: [],
     },
     {
         id: "000003",
@@ -52,5 +81,7 @@ export const recipes: Recipe[] = [
         procedure: "Step step step",
         image: bicolExpressImg,
         favorite: true,
+        ingredients: [],
+        steps: [],
     },
 ]

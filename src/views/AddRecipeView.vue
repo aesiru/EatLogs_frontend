@@ -21,7 +21,6 @@ const newRecipe = ref<Recipe>({
 
 function saveRecipe() {
   recipes.push({ ...newRecipe.value, id: Date.now().toString() })
-  // Optionally, redirect or clear the form
   alert('Recipe added!')
   newRecipe.value = {
     id: Date.now().toString(),
@@ -40,10 +39,14 @@ function saveRecipe() {
   }
 }
 
+function goBack() {
+  // Add your navigation logic here
+  window.history.back() // or use your router
+}
+
 function addIngredient() {
   newRecipe.value.ingredients.push({
     name: '',
-    unit: 'gram',
   })
 }
 
@@ -60,15 +63,49 @@ function addStep() {
 function removeStep(index: number) {
   newRecipe.value.steps.splice(index, 1)
 }
+
+function handleImageUpload(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      newRecipe.value.image = e.target?.result as string
+    }
+    reader.readAsDataURL(file)
+  }
+}
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto px-4 py-8">
+  <div class="bg-[#F5ECD5] min-h-screen p-10">
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-bold flex items-center">New Recipe</h2>
+      <div class="flex items-center gap-4">
+        <!-- Back/Close Button -->
+        <button
+          @click="goBack"
+          class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-gray-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+        </button>
+        <h2 class="text-2xl font-bold">New Recipe</h2>
+      </div>
       <button
         @click="saveRecipe"
-        class="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors"
+        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-green-700 hover:text-white transition"
       >
         Save Recipe
       </button>
@@ -76,7 +113,62 @@ function removeStep(index: number) {
 
     <div class="grid md:grid-cols-2 gap-8">
       <div class="space-y-4">
-        <!-- All fields unchanged except icons -->
+        <!-- Image Upload Section -->
+        <div>
+          <label class="block text-sm font-medium mb-1">Recipe Image:</label>
+          <div class="flex items-center gap-4">
+            <div
+              class="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50"
+            >
+              <img
+                v-if="newRecipe.image"
+                :src="newRecipe.image"
+                alt="Recipe preview"
+                class="w-full h-full object-cover rounded-lg"
+              />
+              <div v-else class="text-center text-gray-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-8 h-8 mx-auto mb-2"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="text-xs">No image</span>
+              </div>
+            </div>
+            <div>
+              <input
+                type="file"
+                accept="image/*"
+                @change="handleImageUpload"
+                class="hidden"
+                id="image-upload"
+              />
+              <label
+                for="image-upload"
+                class="cursor-pointer bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg border transition"
+              >
+                Choose Image
+              </label>
+              <button
+                v-if="newRecipe.image"
+                @click="newRecipe.image = ''"
+                class="ml-2 text-red-500 hover:text-red-700 text-sm"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block text-sm font-medium mb-1">Name:</label>
           <input
@@ -155,12 +247,6 @@ function removeStep(index: number) {
                 class="flex-1 p-2 border border-gray-300 rounded"
                 placeholder="Add new ingredient"
               />
-              <select v-model="ingredient.unit" class="p-2 border border-gray-300 rounded">
-                <option value="gram">Gram</option>
-                <option value="cup">Cup</option>
-                <option value="tbsp">Tbsp</option>
-              </select>
-              <!-- Inline SVG for X (close icon) -->
               <button @click="removeIngredient(index)" class="text-red-500 hover:text-red-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +286,6 @@ function removeStep(index: number) {
                 class="flex-1 p-2 border border-gray-300 rounded"
                 :placeholder="`Step ${index + 1}`"
               />
-              <!-- Inline X icon -->
               <button @click="removeStep(index)" class="text-red-500 hover:text-red-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

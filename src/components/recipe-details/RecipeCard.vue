@@ -19,7 +19,7 @@ function toggleFavorite() {
 </script>
 
 <template>
-  <div class="flex flex-col flex-end card-container p-2">
+  <div class="flex flex-col flex-end card-container">
     <RouterLink :to="`/recipe/${id}`" className="block mb-5">
       <img :src="image" alt="" class="w-[15.2rem] h-[12.6rem]" />
     </RouterLink>
