@@ -5,6 +5,7 @@ import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/stores/recipe'
 
 const route = useRoute()
+const showSuccess = ref(false)
 const router = useRouter()
 
 const editedRecipe = ref<Recipe>({
@@ -36,7 +37,11 @@ function updateRecipe() {
   const index = recipes.findIndex(recipe => recipe.id === editedRecipe.value.id)
   if (index !== -1) {
     recipes[index] = { ...editedRecipe.value }
-    router.push('/recipes')
+    showSuccess.value = true
+    setTimeout(() => {
+      showSuccess.value = false
+      router.push('/recipes')
+    }, 800) // Delay to show message
   }
 }
 
@@ -74,6 +79,14 @@ function handleImageUpload(event: Event) {
 </script>
 
 <template>
+  <transition name="fade">
+    <div
+      v-if="showSuccess"
+      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+    >
+      Recipe updated successfully!
+    </div>
+  </transition>
   <div class="bg-[#F5ECD5] min-h-screen p-10">
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-4">
