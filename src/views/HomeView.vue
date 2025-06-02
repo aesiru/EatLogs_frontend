@@ -7,28 +7,15 @@
 
   <div class="w-full md:w-1/2 flex flex-col justify-center items-center gap-8 p-2 md:p-10 text-center">
     <div class="flex flex-col items-center gap-6 lg:gap-15 text-[#F5ECD5] custom-text-shadow">
-      <p class="font-pacifico text-4xl md:text-5xl lg:text-7xl">My Recipe Book</p>
-      <p class="text-center">Store, manage, and track your favorite recipes. Discover new dishes, save family favorites, and create your personal 
-        digital cookbook — all in one place. Whether you're meal-planning or experimenting with something new, 
-        your kitchen companion is here to help.</p>
+      <p class="font-satisfy text-5xl md:text-5xl lg:text-9xl">Eat Logs</p>
+      <p class="text-center items-center text-xl">Your personal recipe book—A personal cookbook <br>that stays offline, like a trusty kitchen notebook, but digital. </p>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-center items-center">
-      <RouterLink to="/recipes">
-      <div class="flex flex-col bg-[#F5ECD5] text-[#626F47] items-center font-regular py-2 px-4 rounded shadow">
-        <Utensils color="#F0BB78"/>
-        <img src="/src/assets/icons/utensil-icon-orange.svg" alt="">
-        Recipes
+    <RouterLink to="/recipes">
+      <div class="flex flex-col bg-[#F5ECD5] text-[#626F47] font-[500] text-[1.5rem] items-center justify-center py-2 px-4 rounded-[1.19rem] shadow h-[4rem] w-[12rem]">
+        Get Started
       </div>
-      </RouterLink>
-      <RouterLink to="/add-recipe">
-        <div class="flex flex-col bg-[#F0BB78] text-[#626F47] items-center font-regular py-2 px-4 rounded shadow">
-          <Utensils color="#F0BB78"/>
-          <img src="/src/assets/icons/add-recipe-icon-light.svg" alt="">
-          Add Recipes
-        </div>
-      </RouterLink>
-      </div>
+    </RouterLink>
   </div>
   </div>
 </template>

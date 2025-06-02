@@ -1,8 +1,13 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Pixels&family=Satisfy&display=swap');
 
 .font-pacifico{
     font-family: 'Pacifico', cursive;
+}
+
+.font-satisfy{
+    font-family: "Satisfy", cursive;
 }
 
 .button-box-shadow{
@@ -11,4 +16,74 @@
 
 .custom-text-shadow{
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.custom-text-shadow-2{
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+}
+
+.card-container{
+    width: 16.5rem;
+    height: 19rem;
+    flex-shrink: 0;
+    border-radius: 1.25rem;
+    background: #F0BB78;
+    padding: 1rem;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* buttons */
+.button-container{
+    align-items: center;
+    justify-content: center;
+    width: 9.9rem;
+    height: 3.25rem;
+    border-radius: 0.75rem;
+}
+
+/* labels */
+.label1{
+    color: #626F47;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.label2{
+    width: 19.375rem;
+    height: 3.3125rem;
+    flex-shrink: 0;
+    color: #626F47;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+/* subtexts */
+
+.subtext1{
+    color: #626F47;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.subtext2{
+    color: #626F47;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.title1{
+    color: #626F47;
+    font-family: Satisfy;
+    font-size: 3.625rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
 }
