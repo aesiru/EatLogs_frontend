@@ -227,28 +227,24 @@ function handleImageUpload(event: Event) {
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1">Servings:</label>
-            <select
-              v-model="editedRecipe.serving"
+            <input
+              v-model.number="editedRecipe.serving"
+              type="number"
+              min="1"
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="">--Select--</option>
-              <option value="1-2">1-2 people</option>
-              <option value="3-4">3-4 people</option>
-              <option value="5+">5+ people</option>
-            </select>
+              placeholder="Number of servings"
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Duration:</label>
-            <select
-              v-model="editedRecipe.duration"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="">--Minutes--</option>
-              <option value="15 min">15 minutes</option>
-              <option value="30 min">30 minutes</option>
-              <option value="1 hour">1 hour</option>
-            </select>
-          </div>
+          <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
+          <input
+            v-model.number="editedRecipe.duration"
+            type="number"
+            min="1"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            placeholder="Duration in minutes"
+          />
+        </div>
         </div>
 
         <div>
@@ -282,7 +278,7 @@ function handleImageUpload(event: Event) {
                 </svg>
               </button>
             </div>
-            <button @click="addIngredient" class="text-green-600 hover:text-green-800 text-sm">
+            <button @click="addIngredient" class="text-[#626F47] hover:text-green-700 text-sm">
               + Add ingredient
             </button>
           </div>
@@ -321,7 +317,7 @@ function handleImageUpload(event: Event) {
                 </svg>
               </button>
             </div>
-            <button @click="addStep" class="text-green-600 hover:text-green-800 text-sm">
+            <button @click="addStep" class="text-[#626F47] hover:text-green-700 text-sm">
               + Add step
             </button>
           </div>

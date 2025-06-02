@@ -17,8 +17,8 @@ export interface Recipe {
   recipe_name: string
   cuisine: string
   category: string
-  duration: number
-  serving: number
+  duration: number 
+  serving: number 
   description: string
   procedure: string
   image: string
