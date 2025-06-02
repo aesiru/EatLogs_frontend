@@ -199,9 +199,24 @@ function handleImageUpload(event: Event) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">--Select--</option>
-              <option value="filipino">Filipino</option>
-              <option value="italian">Italian</option>
-              <option value="chinese">Chinese</option>
+              <option value="American">American</option>
+              <option value="Brazilian">Brazilian</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Ethiopian">Ethiopian</option>
+              <option value="Filipino">Filipino</option>
+              <option value="French">French</option>
+              <option value="Greek">Greek</option>
+              <option value="Indian">Indian</option>
+              <option value="Italian">Italian</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Korean">Korean</option>
+              <option value="Mexican">Mexican</option>
+              <option value="Middle Eastern">Middle Eastern</option>
+              <option value="Moroccan">Moroccan</option>
+              <option value="Spanish">Spanish</option>
+              <option value="Thai">Thai</option>
+              <option value="Vietnamese">Vietnamese</option>
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>

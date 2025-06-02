@@ -30,7 +30,7 @@ const router = createRouter({
       component: () => import('../views/FavoritesView.vue'),
     },
     {
-      path: '/edit-recipe',
+      path: '/edit-recipe/:id',
       name: 'edit recipe',
       component: () => import('../views/EditRecipeView.vue'),
     },
