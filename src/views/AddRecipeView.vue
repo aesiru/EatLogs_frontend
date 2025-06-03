@@ -68,7 +68,7 @@ function handleImageUpload(event: Event) {
   <transition name="fade">
     <div
       v-if="showSuccess"
-      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#626F47] text-white px-6 py-3 rounded-lg shadow-lg z-50"
     >
       Recipe added successfully!
     </div>
@@ -100,7 +100,7 @@ function handleImageUpload(event: Event) {
       </div>
       <button
         @click="saveRecipe"
-        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-green-700 hover:text-white transition"
+        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-[#626F47] hover:text-white transition"
       >
         Save Recipe
       </button>

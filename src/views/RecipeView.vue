@@ -36,10 +36,7 @@ console.log(recipes)
 <template>
   <div class="bg-[#F5ECD5] min-h-screen p-10">
     <transition name="fade">
-      <div
-        v-if="successMessage"
-        class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
-      >
+      <div v-if="successMessage" class="success-message">
         {{ successMessage }}
       </div>
     </transition>
@@ -143,5 +140,30 @@ console.log(recipes)
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #626F47; /* Green background */
+  color: white;
+  padding: 15px 25px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 300px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 </style>
