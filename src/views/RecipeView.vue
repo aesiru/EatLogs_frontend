@@ -86,7 +86,9 @@ console.log(recipes)
           <div class="flex flex-row gap-3 text-[#626F47]">
             <RouterLink
               to="/favorites"
-              class="flex flex-row p-2 gap-2 border-1 border-[#626F47] font-[600] button-container"
+              class="flex flex-row p-2 gap-2 border-1 border-[#626F47] font-[600] button-container
+                      transition-transform duration-200 ease-in-out
+                      hover:scale-[1.06] hover:bg-[#F5ECD5]/80"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +108,9 @@ console.log(recipes)
             </RouterLink>
             <RouterLink
               to="/add-recipe"
-              class="flex flex-row p-2 gap-2 bg-[#626F47] text-[#F5ECD5] font-[600] button-container"
+              class="flex flex-row p-2 gap-2 bg-[#626F47] text-[#F5ECD5] font-[600] button-container
+                    transition-transform duration-200 ease-in-out
+                    hover:scale-[1.06] hover:bg-[#535E3F]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

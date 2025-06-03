@@ -100,7 +100,7 @@ function handleImageUpload(event: Event) {
       </div>
       <button
         @click="saveRecipe"
-        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-[#626F47] hover:text-white transition"
+        class="bg-[#626F47] text-white px-6 py-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-[1.06] hover:bg-[#535E3F]"
       >
         Save Recipe
       </button>
