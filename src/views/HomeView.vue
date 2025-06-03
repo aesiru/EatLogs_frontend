@@ -12,7 +12,9 @@
     </div>
 
     <RouterLink to="/recipes">
-      <div class="flex flex-col bg-[#F5ECD5] text-[#626F47] font-[500] text-[1.5rem] items-center justify-center py-2 px-4 rounded-[1.19rem] shadow h-[4rem] w-[12rem]">
+      <div class="flex flex-col bg-[#F5ECD5] text-[#626F47] font-[500] text-[1.5rem] items-center justify-center py-2 px-4 rounded-[1.19rem] shadow h-[4rem] w-[12rem]
+            transition-all duration-300 ease-in-out
+            hover:scale-105 hover:bg-[#E0D4B8] hover:shadow-md">
         Get Started
       </div>
     </RouterLink>

@@ -5,8 +5,8 @@ import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/stores/recipe'
 
 const route = useRoute()
-const showSuccess = ref(false)
 const router = useRouter()
+const showSuccess = ref(false)
 
 const editedRecipe = ref<Recipe>({
   id: '',
@@ -25,8 +25,8 @@ const editedRecipe = ref<Recipe>({
 })
 
 onMounted(() => {
-  const recipeId = route.params.id
-  const recipeToEdit = recipes.find(recipe => recipe.id === recipeId)
+  const recipeId = route.params.id as string  // Explicitly type the param
+  const recipeToEdit = recipes.value.find((recipe: Recipe) => recipe.id === recipeId)
   
   if (recipeToEdit) {
     editedRecipe.value = JSON.parse(JSON.stringify(recipeToEdit))
@@ -34,14 +34,14 @@ onMounted(() => {
 })
 
 function updateRecipe() {
-  const index = recipes.findIndex(recipe => recipe.id === editedRecipe.value.id)
+  const index = recipes.value.findIndex((recipe: Recipe) => recipe.id === editedRecipe.value.id)
   if (index !== -1) {
-    recipes[index] = { ...editedRecipe.value }
+    recipes.value[index] = { ...editedRecipe.value }
     showSuccess.value = true
     setTimeout(() => {
       showSuccess.value = false
       router.push('/recipes')
-    }, 800) // Delay to show message
+    }, 800)
   }
 }
 
@@ -82,7 +82,7 @@ function handleImageUpload(event: Event) {
   <transition name="fade">
     <div
       v-if="showSuccess"
-      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#626F47] text-white px-6 py-3 rounded-lg shadow-lg z-50"
     >
       Recipe updated successfully!
     </div>
@@ -114,7 +114,7 @@ function handleImageUpload(event: Event) {
       </div>
       <button
         @click="updateRecipe"
-        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-green-700 hover:text-white transition"
+        class="bg-[#626F47] text-white px-6 py-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-[1.06] hover:bg-[#535E3F]"
       >
         Update Recipe
       </button>
@@ -196,9 +196,9 @@ function handleImageUpload(event: Event) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">--Select--</option>
-              <option value="main">Main Course</option>
-              <option value="dessert">Dessert</option>
-              <option value="appetizer">Appetizer</option>
+              <option value="Main">Main Course</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Appetizer">Appetizer</option>
             </select>
           </div>
           <div>
@@ -341,3 +341,14 @@ function handleImageUpload(event: Event) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

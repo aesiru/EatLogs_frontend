@@ -1,11 +1,10 @@
-<!-- generate all the cards created for each recipe -->
-
 <script setup>
 import RecipeCard from '@/components/recipe-details/RecipeCard.vue'
-import { recipes as initialRecipes } from '@/stores/recipe'
+import { recipes as recipeStore } from '@/stores/recipe' // Store import
 import { ref } from 'vue'
 
-const recipes = ref([...initialRecipes])
+// Use the store directly instead of creating a local copy
+const recipes = recipeStore // Use the reactive store directly
 const successMessage = ref('')
 const messageTimeout = ref(null)
 
@@ -19,8 +18,8 @@ function toggleFavorite(id) {
 
     // Show message
     successMessage.value = recipe.favorite
-      ? `"${recipe.recipe_name}" added to favorites!`
-      : `"${recipe.recipe_name}" removed from favorites!`
+      ? `Successfully added ${recipe.recipe_name} to favorites!`
+      : `Successfully removed ${recipe.recipe_name} from favorites!`
 
     // Clear message after 3 seconds
     clearTimeout(messageTimeout.value)
@@ -30,17 +29,30 @@ function toggleFavorite(id) {
   }
 }
 
+function deleteRecipe(id) {
+  // Modify the store's value directly
+  recipeStore.value = recipeStore.value.filter(recipe => recipe.id !== id)
+  
+  // Show success message
+  successMessage.value = 'Recipe deleted successfully!'
+  
+  // Clear message after 3 seconds
+  clearTimeout(messageTimeout.value)
+  messageTimeout.value = setTimeout(() => {
+    successMessage.value = ''
+  }, 3000)
+}
+
 console.log(recipes)
 </script>
 
 <template>
   <div class="bg-[#F5ECD5] min-h-screen p-10">
-    <div
-      v-if="successMessage"
-      class="bg-green-100 text-green-800 p-3 rounded mb-4 transition-opacity duration-300"
-    >
-      {{ successMessage }}
-    </div>
+    <transition name="fade">
+      <div v-if="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+    </transition>
     <p class="font-satisfy text-7xl text-[#626F47] custom-text-shadow-2 text-center mt-5">
       Let's Eat Logs!
     </p>
@@ -74,7 +86,9 @@ console.log(recipes)
           <div class="flex flex-row gap-3 text-[#626F47]">
             <RouterLink
               to="/favorites"
-              class="flex flex-row p-2 gap-2 border-1 border-[#626F47] font-[600] button-container"
+              class="flex flex-row p-2 gap-2 border-1 border-[#626F47] font-[600] button-container
+                      transition-transform duration-200 ease-in-out
+                      hover:scale-[1.06] hover:bg-[#F5ECD5]/80"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +108,9 @@ console.log(recipes)
             </RouterLink>
             <RouterLink
               to="/add-recipe"
-              class="flex flex-row p-2 gap-2 bg-[#626F47] text-[#F5ECD5] font-[600] button-container"
+              class="flex flex-row p-2 gap-2 bg-[#626F47] text-[#F5ECD5] font-[600] button-container
+                    transition-transform duration-200 ease-in-out
+                    hover:scale-[1.06] hover:bg-[#535E3F]"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -114,8 +130,8 @@ console.log(recipes)
           </div>
         </div>
         <div
-          class="w-full h-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10"
-        >
+    class="w-full h-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10"
+  >
           <RecipeCard
             v-for="recipe in recipes"
             :key="recipe.id"
@@ -124,11 +140,49 @@ console.log(recipes)
             :cuisine="recipe.cuisine"
             :category="recipe.category"
             :image="recipe.image"
+            :favorite="recipe.favorite"
             v-bind="recipe"
             @toggle-favorite="toggleFavorite"
+            @delete-recipe="deleteRecipe"
           />
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.success-message {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #626F47; /* Green background */
+  color: white;
+  padding: 15px 25px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 300px;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+</style>

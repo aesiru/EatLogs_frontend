@@ -22,13 +22,13 @@ const newRecipe = ref<Recipe>({
   notes: '',
 })
 
-function saveRecipe() {
-  recipes.push({ ...newRecipe.value, id: Date.now().toString() })
+function saveRecipe() {  
+  recipes.value.push(newRecipe.value)  
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
     router.push('/recipes')
-  }, 800) // Show message briefly before redirect
+  }, 800)
 }
 
 function goBack() {
@@ -68,7 +68,7 @@ function handleImageUpload(event: Event) {
   <transition name="fade">
     <div
       v-if="showSuccess"
-      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#626F47] text-white px-6 py-3 rounded-lg shadow-lg z-50"
     >
       Recipe added successfully!
     </div>
@@ -100,7 +100,7 @@ function handleImageUpload(event: Event) {
       </div>
       <button
         @click="saveRecipe"
-        class="bg-[#626F47] text-white px-6 py-2 rounded-full hover:bg-green-700 hover:text-white transition"
+        class="bg-[#626F47] text-white px-6 py-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-[1.06] hover:bg-[#535E3F]"
       >
         Save Recipe
       </button>
@@ -182,9 +182,9 @@ function handleImageUpload(event: Event) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">--Select--</option>
-              <option value="main">Main Course</option>
-              <option value="dessert">Dessert</option>
-              <option value="appetizer">Appetizer</option>
+              <option value="Main">Main Course</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Appetizer">Appetizer</option>
             </select>
           </div>
           <div>
@@ -327,3 +327,14 @@ function handleImageUpload(event: Event) {
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

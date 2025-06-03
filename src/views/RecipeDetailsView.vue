@@ -1,15 +1,16 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
 import { recipes } from '@/stores/recipe';
-// import MoreOption from '@/components/MoreOption.vue'
 
 const route = useRoute()
+const router = useRouter()
 const recipeId = String(route.params.id)
-const recipe = recipes.find(r => r.id === recipeId)
 
-console.log(recipes)
+// Access the reactive array with .value
+const recipe = recipes.value.find(r => r.id === recipeId)
 
-const router = useRouter();
+// console.log('Current recipe:', recipe) // Debug log
+// console.log('All recipes:', recipes.value) // Debug log
 
 function goBack() {
   router.back();
