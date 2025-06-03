@@ -1,9 +1,10 @@
 <script setup>
 import RecipeCard from '@/components/recipe-details/RecipeCard.vue'
-import { recipes as recipeStore } from '@/stores/recipe' // Renamed import
+import { recipes as recipeStore } from '@/stores/recipe' // Store import
 import { ref } from 'vue'
 
-const recipes = ref([...recipeStore.value]) // Access .value of the store
+// Use the store directly instead of creating a local copy
+const recipes = recipeStore // Use the reactive store directly
 const successMessage = ref('')
 const messageTimeout = ref(null)
 
@@ -29,8 +30,8 @@ function toggleFavorite(id) {
 }
 
 function deleteRecipe(id) {
-  // Filter out the recipe with the matching ID
-  recipes.value = recipes.value.filter(recipe => recipe.id !== id)
+  // Modify the store's value directly
+  recipeStore.value = recipeStore.value.filter(recipe => recipe.id !== id)
   
   // Show success message
   successMessage.value = 'Recipe deleted successfully!'
