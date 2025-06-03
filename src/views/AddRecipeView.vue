@@ -182,9 +182,9 @@ function handleImageUpload(event: Event) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">--Select--</option>
-              <option value="main">Main Course</option>
-              <option value="dessert">Dessert</option>
-              <option value="appetizer">Appetizer</option>
+              <option value="Main">Main Course</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Appetizer">Appetizer</option>
             </select>
           </div>
           <div>
