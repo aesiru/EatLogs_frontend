@@ -19,8 +19,8 @@ function toggleFavorite(id) {
 
     // Show message
     successMessage.value = recipe.favorite
-      ? `"${recipe.recipe_name}" added to favorites!`
-      : `"${recipe.recipe_name}" removed from favorites!`
+      ? `Successfully added ${recipe.recipe_name} to favorites!`
+      : `Successfully removed ${recipe.recipe_name} from favorites!`
 
     // Clear message after 3 seconds
     clearTimeout(messageTimeout.value)
@@ -35,12 +35,14 @@ console.log(recipes)
 
 <template>
   <div class="bg-[#F5ECD5] min-h-screen p-10">
-    <div
-      v-if="successMessage"
-      class="bg-green-100 text-green-800 p-3 rounded mb-4 transition-opacity duration-300"
-    >
-      {{ successMessage }}
-    </div>
+    <transition name="fade">
+      <div
+        v-if="successMessage"
+        class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+      >
+        {{ successMessage }}
+      </div>
+    </transition>
     <p class="font-satisfy text-7xl text-[#626F47] custom-text-shadow-2 text-center mt-5">
       Let's Eat Logs!
     </p>
@@ -132,3 +134,14 @@ console.log(recipes)
     </div>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
