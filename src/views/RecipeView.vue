@@ -38,7 +38,7 @@ console.log(recipes)
     <transition name="fade">
       <div
         v-if="successMessage"
-        class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+        class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
       >
         {{ successMessage }}
       </div>
