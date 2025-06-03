@@ -1,5 +1,3 @@
-<!-- generate all the cards created for each recipe -->
-
 <script setup>
 import RecipeCard from '@/components/recipe-details/RecipeCard.vue'
 import { recipes as initialRecipes } from '@/stores/recipe'
@@ -28,6 +26,20 @@ function toggleFavorite(id) {
       successMessage.value = ''
     }, 3000)
   }
+}
+
+function deleteRecipe(id) {
+  // Filter out the recipe with the matching ID
+  recipes.value = recipes.value.filter(recipe => recipe.id !== id)
+  
+  // Show success message
+  successMessage.value = 'Recipe deleted successfully!'
+  
+  // Clear message after 3 seconds
+  clearTimeout(messageTimeout.value)
+  messageTimeout.value = setTimeout(() => {
+    successMessage.value = ''
+  }, 3000)
 }
 
 console.log(recipes)
@@ -113,8 +125,8 @@ console.log(recipes)
           </div>
         </div>
         <div
-          class="w-full h-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10"
-        >
+    class="w-full h-full grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mt-10"
+  >
           <RecipeCard
             v-for="recipe in recipes"
             :key="recipe.id"
@@ -123,8 +135,10 @@ console.log(recipes)
             :cuisine="recipe.cuisine"
             :category="recipe.category"
             :image="recipe.image"
+            :favorite="recipe.favorite"
             v-bind="recipe"
             @toggle-favorite="toggleFavorite"
+            @delete-recipe="deleteRecipe"
           />
         </div>
       </div>
