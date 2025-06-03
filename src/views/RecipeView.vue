@@ -1,9 +1,9 @@
 <script setup>
 import RecipeCard from '@/components/recipe-details/RecipeCard.vue'
-import { recipes as initialRecipes } from '@/stores/recipe'
+import { recipes as recipeStore } from '@/stores/recipe' // Renamed import
 import { ref } from 'vue'
 
-const recipes = ref([...initialRecipes])
+const recipes = ref([...recipeStore.value]) // Access .value of the store
 const successMessage = ref('')
 const messageTimeout = ref(null)
 

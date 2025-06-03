@@ -5,8 +5,8 @@ import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/stores/recipe'
 
 const route = useRoute()
-const showSuccess = ref(false)
 const router = useRouter()
+const showSuccess = ref(false)
 
 const editedRecipe = ref<Recipe>({
   id: '',
@@ -25,8 +25,8 @@ const editedRecipe = ref<Recipe>({
 })
 
 onMounted(() => {
-  const recipeId = route.params.id
-  const recipeToEdit = recipes.find(recipe => recipe.id === recipeId)
+  const recipeId = route.params.id as string  // Explicitly type the param
+  const recipeToEdit = recipes.value.find((recipe: Recipe) => recipe.id === recipeId)
   
   if (recipeToEdit) {
     editedRecipe.value = JSON.parse(JSON.stringify(recipeToEdit))
@@ -34,14 +34,14 @@ onMounted(() => {
 })
 
 function updateRecipe() {
-  const index = recipes.findIndex(recipe => recipe.id === editedRecipe.value.id)
+  const index = recipes.value.findIndex((recipe: Recipe) => recipe.id === editedRecipe.value.id)
   if (index !== -1) {
-    recipes[index] = { ...editedRecipe.value }
+    recipes.value[index] = { ...editedRecipe.value }
     showSuccess.value = true
     setTimeout(() => {
       showSuccess.value = false
       router.push('/recipes')
-    }, 800) // Delay to show message
+    }, 800)
   }
 }
 

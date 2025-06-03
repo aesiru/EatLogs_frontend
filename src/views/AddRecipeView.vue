@@ -22,13 +22,13 @@ const newRecipe = ref<Recipe>({
   notes: '',
 })
 
-function saveRecipe() {
-  recipes.push({ ...newRecipe.value, id: Date.now().toString() })
+function saveRecipe() {  
+  recipes.value.push(newRecipe.value)  
   showSuccess.value = true
   setTimeout(() => {
     showSuccess.value = false
     router.push('/recipes')
-  }, 800) // Show message briefly before redirect
+  }, 800)
 }
 
 function goBack() {
