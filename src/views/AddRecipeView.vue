@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/stores/recipe'
 
+const router = useRouter()
+const showSuccess = ref(false)
 const newRecipe = ref<Recipe>({
   id: Date.now().toString(),
   recipe_name: '',
@@ -12,7 +15,7 @@ const newRecipe = ref<Recipe>({
   serving: 0,
   description: '',
   procedure: '',
-  image: '', // You can add image upload logic later
+  image: '',
   favorite: false,
   ingredients: [],
   steps: [],
@@ -21,33 +24,19 @@ const newRecipe = ref<Recipe>({
 
 function saveRecipe() {
   recipes.push({ ...newRecipe.value, id: Date.now().toString() })
-  alert('Recipe added!')
-  newRecipe.value = {
-    id: Date.now().toString(),
-    recipe_name: '',
-    cuisine: '',
-    category: '',
-    duration: 0,
-    serving: 0,
-    description: '',
-    procedure: '',
-    image: '',
-    favorite: false,
-    ingredients: [],
-    steps: [],
-    notes: '',
-  }
+  showSuccess.value = true
+  setTimeout(() => {
+    showSuccess.value = false
+    router.push('/recipes')
+  }, 800) // Show message briefly before redirect
 }
 
 function goBack() {
-  // Add your navigation logic here
-  window.history.back() // or use your router
+  router.go(-1)
 }
 
 function addIngredient() {
-  newRecipe.value.ingredients.push({
-    name: '',
-  })
+  newRecipe.value.ingredients.push({ name: '', unit: '' })
 }
 
 function removeIngredient(index: number) {
@@ -55,9 +44,7 @@ function removeIngredient(index: number) {
 }
 
 function addStep() {
-  newRecipe.value.steps.push({
-    description: '',
-  })
+  newRecipe.value.steps.push({ description: '' })
 }
 
 function removeStep(index: number) {
@@ -78,6 +65,14 @@ function handleImageUpload(event: Event) {
 </script>
 
 <template>
+  <transition name="fade">
+    <div
+      v-if="showSuccess"
+      class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+    >
+      Recipe added successfully!
+    </div>
+  </transition>
   <div class="bg-[#F5ECD5] min-h-screen p-10">
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-4">
@@ -199,9 +194,24 @@ function handleImageUpload(event: Event) {
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
             >
               <option value="">--Select--</option>
-              <option value="filipino">Filipino</option>
-              <option value="italian">Italian</option>
-              <option value="chinese">Chinese</option>
+              <option value="American">American</option>
+              <option value="Brazilian">Brazilian</option>
+              <option value="Chinese">Chinese</option>
+              <option value="Ethiopian">Ethiopian</option>
+              <option value="Filipino">Filipino</option>
+              <option value="French">French</option>
+              <option value="Greek">Greek</option>
+              <option value="Indian">Indian</option>
+              <option value="Italian">Italian</option>
+              <option value="Japanese">Japanese</option>
+              <option value="Korean">Korean</option>
+              <option value="Mexican">Mexican</option>
+              <option value="Middle Eastern">Middle Eastern</option>
+              <option value="Moroccan">Moroccan</option>
+              <option value="Spanish">Spanish</option>
+              <option value="Thai">Thai</option>
+              <option value="Vietnamese">Vietnamese</option>
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>
@@ -209,28 +219,24 @@ function handleImageUpload(event: Event) {
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium mb-1">Servings:</label>
-            <select
-              v-model="newRecipe.serving"
+            <input
+              v-model.number="newRecipe.serving"
+              type="number"
+              min="1"
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="">--Select--</option>
-              <option value="1-2">1-2 people</option>
-              <option value="3-4">3-4 people</option>
-              <option value="5+">5+ people</option>
-            </select>
+              placeholder="Number of servings"
+            />
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Duration:</label>
-            <select
-              v-model="newRecipe.duration"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            >
-              <option value="">--Minutes--</option>
-              <option value="15 min">15 minutes</option>
-              <option value="30 min">30 minutes</option>
-              <option value="1 hour">1 hour</option>
-            </select>
-          </div>
+          <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
+          <input
+            v-model.number="newRecipe.duration"
+            type="number"
+            min="1"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            placeholder="Duration in minutes"
+          />
+        </div>
         </div>
 
         <div>
@@ -264,7 +270,7 @@ function handleImageUpload(event: Event) {
                 </svg>
               </button>
             </div>
-            <button @click="addIngredient" class="text-green-600 hover:text-green-800 text-sm">
+            <button @click="addIngredient" class="text-[#626F47] hover:text-green-700 text-sm">
               + Add ingredient
             </button>
           </div>
@@ -303,7 +309,7 @@ function handleImageUpload(event: Event) {
                 </svg>
               </button>
             </div>
-            <button @click="addStep" class="text-green-600 hover:text-green-800 text-sm">
+            <button @click="addStep" class="text-[#626F47] hover:text-green-700 text-sm">
               + Add step
             </button>
           </div>

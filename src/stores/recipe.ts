@@ -1,4 +1,3 @@
-
 import adoboImg from '@/assets/pictures/adobo.png'
 import carbonaraImg from '@/assets/pictures/carbonara.png'
 import bicolExpressImg from '@/assets/pictures/bicol-express.png'
@@ -17,8 +16,8 @@ export interface Recipe {
   recipe_name: string
   cuisine: string
   category: string
-  duration: number
-  serving: number
+  duration: number // in minutes
+  serving: number // integer count
   description: string
   procedure: string
   image: string
