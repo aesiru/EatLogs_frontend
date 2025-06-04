@@ -3,64 +3,80 @@ import RecipeCard from '@/components/recipe-details/RecipeCard.vue'
 import { recipes } from '@/stores/recipe'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { handleRecipe } from '@/compostables/handleRecipe'
+import { handleNotification } from '@/compostables/handleNotification'
+import ConfirmationDialog from '@/components/ConfirmationDialog.vue'
 
 const router = useRouter()
 const favoriteRecipes = computed(() => {
   return recipes.value.filter(recipe => recipe.favorite)
 })
 
-function goBack() {
-  router.back()
+const { successMessage, showMessage } = handleNotification()
+const { 
+  showConfirmDialog, 
+  toggleFavorite,
+  recipeIdToDelete,
+  signalDelete,
+  deleteRecipe,
+  cancelDelete 
+} = handleRecipe()
+
+function handleDelete(id) {
+    console.log('Delete recipe')
+    if(deleteRecipe(id)) {
+        showMessage("Recipe deleted successfully!")
+    }
+    setTimeout(() => {
+        router.push('/main-recipe-view')
+    }, 800)
 }
+
+function handleFavorite(id) {
+  const updatedRecipe = toggleFavorite(id)
+  if (updatedRecipe) {
+    // Show message
+    showMessage(
+      updatedRecipe.favorite
+        ? `Successfully added ${updatedRecipe.recipe_name} to favorites!`
+        : `Successfully removed ${updatedRecipe.recipe_name} from favorites!`
+    )
+  }
+}
+
 </script>
 
 <template>
-  <div class="bg-[#F5ECD5] min-h-screen p-10">
-    <div class="flex justify-between items-center">
-      <!-- Back Button -->
-      <button
-        @click="goBack"
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-5 h-5 text-[#626F47]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
-
-      <p class="font-satisfy text-7xl text-[#626F47] text-center flex-grow">
-        Favorite Recipes
-      </p>
-      
-      <!-- Empty div for balance -->
-      <div class="w-10"></div>
+  <transition name="fade">
+    <div
+      v-if="successMessage"
+      class="success-message"
+    >
+      {{successMessage}}
     </div>
-
-    <div v-if="favoriteRecipes.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 mt-10">
-      <RecipeCard 
-        v-for="recipe in favoriteRecipes"
-        :key="recipe.id"
-        :id="recipe.id"
-        :recipe_name="recipe.recipe_name"
-        :cuisine="recipe.cuisine"
-        :category="recipe.category"
-        :image="recipe.image"
-        :favorite="recipe.favorite"
-        @toggle-favorite="$emit('toggle-favorite', recipe.id)"
-      />
-    </div>
-    <div v-else class="text-center mt-20 text-[#626F47] text-xl">
-      No favorite recipes yet. Heart some recipes to see them here!
-    </div>
+  </transition>
+  <div v-if="favoriteRecipes.length > 0" class="custom-grid">
+    <RecipeCard 
+      v-for="recipe in favoriteRecipes"
+      :key="recipe.id"
+      :id="recipe.id"
+      :recipe_name="recipe.recipe_name"
+      :cuisine="recipe.cuisine"
+      :category="recipe.category"
+      :image="recipe.image"
+      :favorite="recipe.favorite"
+      @toggle-favorite="handleFavorite(recipe.id)"
+      @delete-recipe="signalDelete(recipe.id)"
+    />
+    <ConfirmationDialog
+      :visible="showConfirmDialog"
+      message="Are you sure you want to delete this recipe?"
+      @confirm="handleDelete"
+      @cancel="cancelDelete"
+  />
+  </div>
+  <div v-else class="flex flex-col items-center gap-10 mt-20 text-[#626F47] text-xl">
+    <img src="/src/assets/character/sad-egg.png" alt="sad-egg" class="w-[18rem] h-[20rem]">
+    No favorite recipes yet. Heart some recipes to see them here!
   </div>
 </template>

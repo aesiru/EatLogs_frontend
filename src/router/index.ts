@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('../views/RecipeView.vue'),
     },
     {
+      path: '/main-recipe-view',
+      name: 'recipes',
+      component: () => import('../views/MainRecipeView.vue'),
+    },
+    {
       path: '/add-recipe',
       name: 'add recipe form',
       component: () => import('../views/AddRecipeView.vue'),
