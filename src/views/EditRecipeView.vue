@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { recipes } from '@/stores/recipe'
-import type { Recipe } from '@/stores/recipe'
+import type { Recipe } from '@/types/recipe'
 
 const route = useRoute()
 const router = useRouter()
@@ -40,7 +40,7 @@ function updateRecipe() {
     showSuccess.value = true
     setTimeout(() => {
       showSuccess.value = false
-      router.push('/recipes')
+      router.push('/main-recipe-view')
     }, 800)
   }
 }
@@ -50,7 +50,7 @@ function goBack() {
 }
 
 function addIngredient() {
-  editedRecipe.value.ingredients.push({ name: '', unit: '' })
+  editedRecipe.value.ingredients.push({ name: '', measure: 0, unit: '' })
 }
 
 function removeIngredient(index: number) {
@@ -267,6 +267,25 @@ function handleImageUpload(event: Event) {
                 class="flex-1 p-2 border border-gray-300 rounded"
                 placeholder="Add new ingredient"
               />
+              <!-- ingredient measure -->
+              <input
+                v-model="ingredient.measure"
+                type="number"
+                class="flex-1 p-3 border border-gray-300 rounded"
+                placeholder="Measure"
+              />
+              <!-- ingredient unit -->
+              <select
+                v-model="ingredient.unit"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              >
+                <option value="">--Select--</option>
+                <option value="grams">grams</option>
+                <option value="cups">cups</option>
+                <option value="spoons">spoons</option>
+                <option value="teaspoons">teaspoons</option>
+                <option value="piece">piece</option>
+              </select>
               <button @click="removeIngredient(index)" class="text-red-500 hover:text-red-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -295,9 +314,9 @@ function handleImageUpload(event: Event) {
         <div>
           <label class="block text-sm font-medium mb-1">Steps:</label>
           <div class="space-y-2">
-            <div v-for="(step, index) in editedRecipe.steps" :key="index" class="flex gap-2">
+            <div v-for="(step, index) in editedRecipe.steps" :key="index" class="flex gap-2 items-center">
               <span
-                class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
+                class="bg-[#626F47] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
                 >{{ index + 1 }}</span
               >
               <input
