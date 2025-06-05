@@ -3,41 +3,61 @@ import { ref } from 'vue'
 import type { GlobalIngredient } from '@/types/ingredient'
 
 export const useIngredients = defineStore('ingredients', () => {
-
-    const editDialog = ref(false)
-    const currentlyEditing = ref<GlobalIngredient | null>(null) 
-
+    // State
     const ingredients = ref<GlobalIngredient[]>([
-        { id: 1, name: 'Flour', defaultUnit:'g' },
-        { id: 2, name: 'Sugar', defaultUnit:'g' },
-        { id: 3, name: 'Salt', defaultUnit:'tsp' },
-    
+        { id: 1, name: 'Flour', defaultUnit: 'g' },
+        { id: 2, name: 'Sugar', defaultUnit: 'g' },
+        { id: 3, name: 'Salt', defaultUnit: 'tsp' },
     ])
+    
+    const editDialog = ref(false)
+    const currentlyEditing = ref<GlobalIngredient | null>(null)
+
+    // Actions
+    function openEditDialog(ingredient: GlobalIngredient) {
+        currentlyEditing.value = { ...ingredient }
+        editDialog.value = true
+    }
+
+    function closeEditDialog() {
+        currentlyEditing.value = null
+        editDialog.value = false
+    }
 
     function addIngredient(name: string, unit: string) {
-        const newId = Math.max(...ingredients.value.map(i => i.id), 0) + 1
-        ingredients.value.push({ id: newId, name, defaultUnit: unit })
+        const newId = Math.max(0, ...ingredients.value.map(i => i.id)) + 1
+        const newIngredient = { id: newId, name, defaultUnit: unit }
+        ingredients.value.push(newIngredient)
         return newId
+    }
+
+    function updateIngredient(id: number, updates: Partial<GlobalIngredient>) {
+        const index = ingredients.value.findIndex(ing => ing.id === id)
+        if (index === -1) return false
+        
+        ingredients.value[index] = { 
+            ...ingredients.value[index],
+            ...updates
+        }
+        return true
     }
 
     function deleteIngredient(id: number) {
         const index = ingredients.value.findIndex(ing => ing.id === id)
-        if (index !== -1) {
+        if (index === -1) return false
+        
         ingredients.value.splice(index, 1)
         return true
-        }
-        return false
     }
 
-    function updateIngredientUnit(id: number, newUnit: string) {
-        const ingredient = ingredients.value.find(ing => ing.id === id)
-        if (ingredient) {
-        ingredient.defaultUnit = newUnit
-        return true
-        }
-        return false
+    return { 
+        ingredients,
+        editDialog,
+        currentlyEditing,
+        openEditDialog,
+        closeEditDialog,
+        addIngredient,
+        updateIngredient,
+        deleteIngredient
     }
-
-
-    return { ingredients, addIngredient, deleteIngredient, editDialog, currentlyEditing, updateIngredientUnit }
 })

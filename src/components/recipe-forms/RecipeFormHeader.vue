@@ -2,6 +2,7 @@
 defineProps<{
   title: string
   button_label: string
+  disabled?: boolean
 }>()
 
 const emit = defineEmits(['save', 'goBack'])
@@ -31,11 +32,23 @@ const emit = defineEmits(['save', 'goBack'])
       </button>
       <h2 class="text-2xl font-bold">{{ title }}</h2>
     </div>
-    <button
-      @click="emit('save')"
-      class="bg-[#626F47] text-white px-6 py-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-[1.06] hover:bg-[#535E3F]"
-    >
-      {{ button_label }}
-    </button>
+    <div class="flex flex-row gap-5">
+        <button
+        @click="emit('goBack')"
+        class="bg-gray-100 hover:bg-gray-200 text-[#626F47] px-6 py-2 rounded-full transition-transform duration-200 ease-in-out hover:scale-[1.06]"
+        >
+        Cancel
+        </button>
+        <button
+        @click="emit('save')"
+        :class="[
+            'px-6 py-2 rounded-full transition-transform duration-200 ease-in-out',
+            disabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#626F47] hover:scale-[1.06] hover:bg-[#535E3F] text-white'
+        ]"
+        :disabled="disabled"
+        >
+        {{ button_label }}
+        </button>
+    </div>
   </div>
 </template>

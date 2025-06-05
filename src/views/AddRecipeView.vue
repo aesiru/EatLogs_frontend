@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { recipes } from '@/stores/recipe'
 import { handleNotification } from '@/compostables/handleNotification'
@@ -11,6 +11,30 @@ import ImageUploader from '@/components/recipe-forms/ImageUploader.vue'
 import IngredientManager from '@/components/recipe-forms/IngredientManager.vue'
 import StepManager from '@/components/recipe-forms/StepManager.vue'
 
+
+const requiredFields = [
+  'recipe_name',
+  'category',
+  'cuisine',
+  'image',
+  'ingredients',
+  'steps'
+] as const
+
+const isFormValid = computed(() => {
+  // Check all required fields
+  return requiredFields.every(field => {
+    const value = newRecipe.value[field]
+    
+    // Special handling for arrays
+    if (Array.isArray(value)) {
+      return value.length > 0
+    }
+    
+    // Standard check for other fields
+    return !!value
+  })
+})
 
 const router = useRouter()
 const { successMessage, showMessage } = handleNotification()
@@ -29,12 +53,18 @@ const {
 } = useRecipeForm()
 
 function saveRecipe() {  
+  if (!isFormValid.value) {
+    showMessage('Please fill all required fields')
+    return
+  }
+
   recipes.value.push(newRecipe.value)  
   showMessage('Recipe added successfully!')
   setTimeout(() => {
     router.push('/main-recipe-view')
   }, 800)
 }
+
 
 function goBack() {
   router.go(-1)
@@ -54,6 +84,7 @@ function goBack() {
     <RecipeFormHeader 
       title="New Recipe"
       button_label="Save Recipe"
+      :disabled="!isFormValid"
       @save="saveRecipe"
       @go-back="goBack"
     />
@@ -67,33 +98,44 @@ function goBack() {
         />
 
         <div>
-          <label class="block text-sm font-medium mb-1">Name:</label>
+          <label class="block text-sm font-medium mb-1">Name:<span class="text-red-500">*</span></label>
           <input
             v-model="newRecipe.recipe_name"
             type="text"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            :class="[
+              'w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent',
+              !newRecipe.recipe_name && 'border-red-500'
+            ]"
             placeholder="Recipe name"
           />
+          <p v-if="!newRecipe.recipe_name" class="text-red-500 text-xs mt-1">Recipe name is required</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium mb-1">Category:</label>
+            <label class="block text-sm font-medium mb-1">Category:<span class="text-red-500">*</span></label>
             <select
               v-model="newRecipe.category"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              :class="[
+                'w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent',
+                !newRecipe.category && 'border-red-500'
+              ]"
             >
               <option value="">--Select--</option>
               <option value="Main">Main Course</option>
               <option value="Dessert">Dessert</option>
               <option value="Appetizer">Appetizer</option>
             </select>
+            <p v-if="!newRecipe.category" class="text-red-500 text-xs mt-1">Please select category</p>
           </div>
           <div>
-            <label class="block text-sm font-medium mb-1">Cuisine:</label>
+            <label class="block text-sm font-medium mb-1">Cuisine:<span class="text-red-500">*</span></label>
             <select
               v-model="newRecipe.cuisine"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              :class="[
+                'w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent',
+                !newRecipe.cuisine && 'border-red-500'
+              ]"
             >
               <option value="">--Select--</option>
               <option value="American">American</option>
@@ -115,6 +157,7 @@ function goBack() {
               <option value="Vietnamese">Vietnamese</option>
               <option value="Other">Other</option>
             </select>
+            <p v-if="!newRecipe.recipe_name" class="text-red-500 text-xs mt-1">Please select cuisine</p>
           </div>
         </div>
 

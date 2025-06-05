@@ -8,7 +8,7 @@ const emit = defineEmits(['add-step', 'remove-step', 'update-step'])
 
 <template>
   <div>
-    <label class="block text-sm font-medium mb-1">Steps:</label>
+    <label class="block text-sm font-medium mb-1">Steps:<span class="text-red-500">*</span></label>
     <div class="space-y-2">
       <div v-for="(step, index) in steps" :key="index" class="flex gap-2 items-center">
         <span

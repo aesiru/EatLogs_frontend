@@ -8,7 +8,7 @@ const emit = defineEmits(['upload', 'remove'])
 
 <template>
   <div>
-    <label class="block text-sm font-medium mb-1">Recipe Image:</label>
+    <label class="block text-sm font-medium mb-1">Recipe Image:<span class="text-red-500">*</span></label>
     <div class="flex items-center gap-4">
       <div
         class="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50"
