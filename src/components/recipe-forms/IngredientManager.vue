@@ -157,7 +157,7 @@ function deleteGlobalIngredient(id: number) {
   </transition>
   
   <div>
-    <label class="block text-sm font-medium mb-1">Ingredients:</label>
+    <label class="block text-sm font-medium mb-1">Ingredients:<span class="text-red-500">*</span></label>
     <div class="space-y-2">
       <div
         v-for="(ingredient, index) in ingredients"
