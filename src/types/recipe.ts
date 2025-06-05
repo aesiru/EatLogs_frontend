@@ -1,6 +1,6 @@
 export interface Ingredient {
   name: string
-  measure: 0
+  quantity: number
   unit: string
 }
 
