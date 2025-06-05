@@ -18,6 +18,7 @@ export interface Recipe {
   description: string
   procedure: string
   image: string
+  date: string
   favorite: boolean
   ingredients: Ingredient[]
   steps: Step[]
