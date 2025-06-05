@@ -25,6 +25,7 @@ const emit = defineEmits([
 const newIngredientDialog = ref(false)
 const newIngredientName = ref('')
 const newIngredientUnit = ref('g')
+const availableUnits = ['g', 'kg', 'mL', 'L', 'pcs', 'tsp', 'tbsp', 'cup']
 
 function safeParseIngredientId(value: unknown): number | null {
   if (typeof value === 'number') return value
@@ -72,6 +73,43 @@ function onIngredientSelected(index: number, eventOrId: Event | number) {
   emit('update-selected-ids', { index, id: ingredientId })
 }
 
+function editGlobalIngredient(ingredientId: number) {
+  const ingredient = ingredientsStore.ingredients.find(i => i.id === ingredientId)
+  if (ingredient) {
+    console.log("ingredientID: ", ingredient.id)
+    ingredientsStore.currentlyEditing = { ...ingredient }
+    ingredientsStore.editDialog = true
+  }
+}
+
+function saveIngredientChanges() {
+  if (ingredientsStore.currentlyEditing) {
+    const success = ingredientsStore.updateIngredient(
+      ingredientsStore.currentlyEditing.id,
+      { defaultUnit: ingredientsStore.currentlyEditing.defaultUnit }
+    )
+    
+    if (success) {
+      // Find all ingredients in the current recipe that use this global ingredient
+      props.selectedIngredientIds.forEach((id, index) => {
+        if (id === ingredientsStore.currentlyEditing?.id) {
+          emit('update-ingredient', {
+            index,
+            ingredient: {
+              ...props.ingredients[index],
+              unit: ingredientsStore.currentlyEditing.defaultUnit
+            }
+          })
+        }
+      })
+      
+      showMessage('Ingredient updated successfully!')
+      ingredientsStore.editDialog = false
+      ingredientsStore.currentlyEditing = null
+    }
+  }
+}
+
 function confirmNewIngredient() {
   const name = newIngredientName.value.trim()
   
@@ -94,7 +132,7 @@ function confirmNewIngredient() {
     newIngredientDialog.value = false
     showMessage('Ingredient added successfully!')
     
-    return id // Return the new ID for parent component to handle
+    return id
   }
 }
 
@@ -109,21 +147,22 @@ function deleteGlobalIngredient(id: number) {
 </script>
 
 <template>
-    <transition name="fade">
+  <transition name="fade">
     <div
       v-if="successMessage"
       class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#626F47] text-white px-6 py-3 rounded-lg shadow-lg z-50"
     >
-      {{successMessage}}
+      {{ successMessage }}
     </div>
   </transition>
+  
   <div>
     <label class="block text-sm font-medium mb-1">Ingredients:</label>
     <div class="space-y-2">
       <div
         v-for="(ingredient, index) in ingredients"
         :key="index"
-        class="flex gap-2"
+        class="flex gap-2 items-center"
       >
         <div class="flex-1">
           <select
@@ -137,7 +176,7 @@ function deleteGlobalIngredient(id: number) {
               :key="item.id" 
               :value="item.id"
             >
-              {{ item.name }}
+              {{ item.name }} ({{ item.defaultUnit }})
             </option>
             <option value="custom">+ Custom Ingredient</option>
           </select>
@@ -161,8 +200,18 @@ function deleteGlobalIngredient(id: number) {
           placeholder="Qty"
         />
         
-        <div class="w-20 p-2 text-gray-600 text-sm">
+        <div class="w-24 p-2 text-gray-600 text-sm flex items-center gap-1">
           {{ ingredient.unit }}
+          <button 
+            v-if="selectedIngredientIds[index]"
+            @click="editGlobalIngredient(selectedIngredientIds[index]!)"
+            class="text-gray-400 hover:text-gray-600 ml-12"
+            title="Edit default unit"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
         </div>
         
         <button @click="$emit('remove-ingredient', index)" class="text-red-500 hover:text-red-700">
@@ -187,7 +236,7 @@ function deleteGlobalIngredient(id: number) {
       </button>
     </div>
 
-    <!-- New Ingredient (insert to ingredients table) Dialog -->
+    <!-- New Ingredient Dialog -->
     <dialog v-if="newIngredientDialog" class="fixed inset-0 rounded-4xl button-box-shadow flex items-center justify-center p-4 z-50 mt-100 ml-10">
       <div class="bg-white rounded-lg p-6 w-full max-w-md">
         <h3 class="font-bold text-lg mb-4">Add New Ingredient</h3>
@@ -205,17 +254,14 @@ function deleteGlobalIngredient(id: number) {
           </div>
           
           <div>
-            <button class="block text-sm font-medium mb-1">Default Unit:</button>
+            <label class="block text-sm font-medium mb-1">Default Unit:</label>
             <select
               v-model="newIngredientUnit"
               class="w-full p-2 border rounded"
             >
-              <option value="g">Grams (g)</option>
-              <option value="kg">Kilograms (kg)</option>
-              <option value="pcs">Pieces (pcs)</option>
-              <option value="tsp">Teaspoons (tsp)</option>
-              <option value="tbsp">Tablespoons (tbsp)</option>
-              <option value="cup">Cups (cup)</option>
+              <option v-for="unit in availableUnits" :key="unit" :value="unit">
+                {{ unit }}
+              </option>
             </select>
           </div>
           
@@ -234,5 +280,59 @@ function deleteGlobalIngredient(id: number) {
         </div>
       </div>
     </dialog>
+
+    <!-- Edit Ingredient Dialog -->
+    <dialog v-if="ingredientsStore.editDialog" class="fixed inset-0 button-box-shadow rounded-4xl flex items-center justify-center p-4 z-50 mt-100 ml-100">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md" v-if="ingredientsStore.currentlyEditing">
+        <h3 class="font-bold text-lg mb-4">Edit Ingredient</h3>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Name:</label>
+            <input
+              :value="ingredientsStore.currentlyEditing.name"
+              type="text"
+              class="w-full p-2 border rounded bg-gray-100"
+              disabled
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Default Unit:</label>
+            <select
+              v-model="ingredientsStore.currentlyEditing.defaultUnit"
+              class="w-full p-2 border rounded"
+            >
+              <option v-for="unit in availableUnits" :key="unit" :value="unit">
+                {{ unit }}
+              </option>
+            </select>
+          </div>
+          
+          <div class="flex justify-end gap-2 pt-4">
+            <button @click="ingredientsStore.editDialog = false" class="px-4 py-2 border rounded">
+              Cancel
+            </button>
+            <button 
+              @click="saveIngredientChanges" 
+              class="px-4 py-2 bg-[#626F47] text-white rounded"
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
   </div>
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
