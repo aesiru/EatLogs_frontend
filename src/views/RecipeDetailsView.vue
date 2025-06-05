@@ -183,7 +183,7 @@ function handleFavorite(id) {
                     <!-- Measurement and unit -->
                     <div class="flex items-baseline justify-start space-x-1">
                         <span class="">
-                        {{ ingredient.measure }}
+                        {{ ingredient.quantity }}
                         </span>
                         <span class="">
                         {{ ingredient.unit }}
