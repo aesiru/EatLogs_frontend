@@ -8,6 +8,11 @@ const route = useRoute()
 const router = useRouter()
 const showSuccess = ref(false)
 
+function getToday() {
+  const d = new Date()
+  return d.toISOString().slice(0, 10)
+}
+
 const editedRecipe = ref<Recipe>({
   id: '',
   recipe_name: '',
@@ -20,14 +25,15 @@ const editedRecipe = ref<Recipe>({
   image: '',
   favorite: false,
   ingredients: [],
+  date: getToday(),
   steps: [],
   notes: '',
 })
 
 onMounted(() => {
-  const recipeId = route.params.id as string  // Explicitly type the param
+  const recipeId = route.params.id as string // Explicitly type the param
   const recipeToEdit = recipes.value.find((recipe: Recipe) => recipe.id === recipeId)
-  
+
   if (recipeToEdit) {
     editedRecipe.value = JSON.parse(JSON.stringify(recipeToEdit))
   }
@@ -242,15 +248,15 @@ function handleImageUpload(event: Event) {
             />
           </div>
           <div>
-          <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
-          <input
-            v-model.number="editedRecipe.duration"
-            type="number"
-            min="1"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="Duration in minutes"
-          />
-        </div>
+            <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
+            <input
+              v-model.number="editedRecipe.duration"
+              type="number"
+              min="1"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Duration in minutes"
+            />
+          </div>
         </div>
 
         <div>
@@ -314,7 +320,11 @@ function handleImageUpload(event: Event) {
         <div>
           <label class="block text-sm font-medium mb-1">Steps:</label>
           <div class="space-y-2">
-            <div v-for="(step, index) in editedRecipe.steps" :key="index" class="flex gap-2 items-center">
+            <div
+              v-for="(step, index) in editedRecipe.steps"
+              :key="index"
+              class="flex gap-2 items-center"
+            >
               <span
                 class="bg-[#626F47] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
                 >{{ index + 1 }}</span

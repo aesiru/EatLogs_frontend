@@ -3,10 +3,15 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { recipes } from '@/stores/recipe'
 import type { Recipe } from '@/types/recipe'
+import { addRecipe } from '@/stores/recipe'
 import { handleNotification } from '@/compostables/handleNotification'
 
-const router = useRouter()
+function getToday() {
+  const d = new Date()
+  return d.toISOString().slice(0, 10)
+}
 
+const router = useRouter()
 const { successMessage, showMessage } = handleNotification()
 
 const newRecipe = ref<Recipe>({
@@ -19,22 +24,23 @@ const newRecipe = ref<Recipe>({
   description: '',
   procedure: '',
   image: '',
+  date: getToday(),
   favorite: false,
-  ingredients: [{
-    name:'',
-    measure: 0,
-    unit: '',
-  }],
+  ingredients: [], // <-- This should be an array of Ingredient IDs, e.g. [1, 2]
   steps: [],
   notes: '',
 })
 
-function saveRecipe() {  
-  recipes.value.push(newRecipe.value)  
-  showMessage('Recipe added successfully!')
-  setTimeout(() => {
-    router.push('/main-recipe-view')
-  }, 800)
+async function saveRecipe() {
+  try {
+    await addRecipe(newRecipe.value)
+    showMessage('Recipe added successfully!')
+    setTimeout(() => {
+      router.push('/main-recipe-view')
+    }, 800)
+  } catch (err) {
+    showMessage('Failed to add recipe!')
+  }
 }
 
 function goBack() {
@@ -76,9 +82,10 @@ function handleImageUpload(event: Event) {
       v-if="successMessage"
       class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-[#626F47] text-white px-6 py-3 rounded-lg shadow-lg z-50"
     >
-      {{successMessage}}
+      {{ successMessage }}
     </div>
   </transition>
+
   <div class="bg-[#F5ECD5] min-h-screen p-10">
     <div class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-4">
@@ -234,15 +241,15 @@ function handleImageUpload(event: Event) {
             />
           </div>
           <div>
-          <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
-          <input
-            v-model.number="newRecipe.duration"
-            type="number"
-            min="1"
-            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            placeholder="Duration in minutes"
-          />
-        </div>
+            <label class="block text-sm font-medium mb-1">Duration (minutes):</label>
+            <input
+              v-model.number="newRecipe.duration"
+              type="number"
+              min="1"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              placeholder="Duration in minutes"
+            />
+          </div>
         </div>
 
         <div>
@@ -263,13 +270,13 @@ function handleImageUpload(event: Event) {
               <input
                 v-model="ingredient.measure"
                 type="number"
-                class="flex-1 p-3 border border-gray-300 rounded"
+                class="w-24 p-2 border border-gray-300 rounded"
                 placeholder="Measure"
               />
               <!-- ingredient unit -->
               <select
                 v-model="ingredient.unit"
-                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                class="w-32 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
               >
                 <option value="">--Select--</option>
                 <option value="grams">grams</option>
@@ -306,7 +313,11 @@ function handleImageUpload(event: Event) {
         <div>
           <label class="block text-sm font-medium mb-1">Steps:</label>
           <div class="space-y-2">
-            <div v-for="(step, index) in newRecipe.steps" :key="index" class="flex gap-2 items-center">
+            <div
+              v-for="(step, index) in newRecipe.steps"
+              :key="index"
+              class="flex gap-2 items-center"
+            >
               <span
                 class="bg-[#626F47] text-white rounded-full w-6 h-6 flex items-center justify-center text-sm"
                 >{{ index + 1 }}</span
@@ -338,6 +349,15 @@ function handleImageUpload(event: Event) {
               + Add step
             </button>
           </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Description:</label>
+          <textarea
+            v-model="newRecipe.description"
+            class="w-full p-3 border border-gray-300 rounded-lg h-32 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            placeholder="Recipe description..."
+          ></textarea>
         </div>
 
         <div>
